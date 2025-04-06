@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "ouroverlay",
+  "version": "${version}",
+  "name": "OurOverlay",
+  "description": "Overlay für r/place by Onako2",
+  "authors": [
+    "Onako2"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Onako2/OurOverlay",
+    "sources": "https://github.com/Onako2/OurOverlay",
+    "issues": "https://github.com/Onako2/OurOverlay/issues"
+  },
+  "license": "GPLv2.0",
+  "icon": "assets/ouroverlay/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "rs.onako2.ouroverlay.OuroverlayClient"
+    ]
+  },
+  "mixins": [
+    "ouroverlay.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}",
+    "mcef": "*"
+  }
+}
