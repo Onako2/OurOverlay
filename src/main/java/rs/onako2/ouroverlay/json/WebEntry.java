@@ -20,17 +20,15 @@ package rs.onako2.ouroverlay.json;
 
 import com.google.gson.annotations.Expose;
 
-public class ConfigJson {
+public class WebEntry {
     @Expose
-    public int version;
-    @Expose
-    public double zoom;
-    @Expose
-    public WebEntry[] entries;
+    public String name;
 
-    public ConfigJson(int version, double zoom, WebEntry[] entries) {
-        this.version = version;
-        this.zoom = zoom;
-        this.entries = entries;
+    @Expose
+    public String url;
+
+    public WebEntry(String name, String url) {
+        this.name = name;
+        this.url = url;
     }
 }
