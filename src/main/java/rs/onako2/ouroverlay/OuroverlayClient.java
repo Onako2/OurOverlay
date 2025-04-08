@@ -15,14 +15,11 @@ import java.nio.file.Files;
 
 public class OuroverlayClient implements ClientModInitializer {
 
-    public static MCEFBrowser browser;
-
-    public static boolean isVisible = true;
-
     public static final String PATH = "ouroverlay/";
     public static final File SETTINGS_FILE = new File(PATH + "settings.json");
     public static final Gson gson = new Gson();
-
+    public static MCEFBrowser browser;
+    public static boolean isVisible = true;
     private static String url;
     private static int version;
     private static double zoom;
@@ -51,6 +48,21 @@ public class OuroverlayClient implements ClientModInitializer {
         OuroverlayClient.zoom = zoom;
     }
 
+    public static void reload() {
+        String settingsString;
+        try {
+            settingsString = Files.readString(SETTINGS_FILE.toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        ConfigJson settings = gson.fromJson(settingsString, ConfigJson.class);
+
+        version = settings.version;
+        zoom = settings.zoom;
+        url = settings.url;
+    }
+
     @Override
     public void onInitializeClient() {
 
@@ -61,7 +73,7 @@ public class OuroverlayClient implements ClientModInitializer {
         try {
             if (SETTINGS_FILE.createNewFile()) {
 
-                ConfigJson defaultSettings = new ConfigJson(0, -3, "http://overlay.united-island.de:3000/");
+                ConfigJson defaultSettings = new ConfigJson(0, 1, "http://overlay.united-island.de:3000/");
 
                 Files.writeString(SETTINGS_FILE.toPath(), gson.toJson(defaultSettings, ConfigJson.class), StandardCharsets.UTF_8);
             }
@@ -89,20 +101,5 @@ public class OuroverlayClient implements ClientModInitializer {
         }
 
         reload();
-    }
-
-    public static void reload() {
-        String settingsString;
-        try {
-            settingsString = Files.readString(SETTINGS_FILE.toPath());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        ConfigJson settings = gson.fromJson(settingsString, ConfigJson.class);
-
-        version = settings.version;
-        zoom = settings.zoom;
-        url = settings.url;
     }
 }

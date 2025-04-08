@@ -15,7 +15,9 @@ import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,9 +31,11 @@ import static rs.onako2.ouroverlay.OuroverlayClient.getUrl;
 public abstract class InGameHudMixin {
     @Unique
     private static int oldWidth;
-
     @Unique
     private static int oldHeight;
+    @Shadow
+    @Final
+    private MinecraftClient client;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addSubDrawer(Lnet/minecraft/client/gui/LayeredDrawer;Ljava/util/function/BooleanSupplier;)Lnet/minecraft/client/gui/LayeredDrawer;", shift = At.Shift.BY, by = 2))
     private void init(MinecraftClient client, CallbackInfo ci, @Local(ordinal = 0) LayeredDrawer layeredDrawer) {
@@ -45,14 +49,18 @@ public abstract class InGameHudMixin {
     @Unique
     private void renderWebHud(DrawContext context, RenderTickCounter tickCounter) {
         if (OuroverlayClient.isVisible) {
+            context.getMatrices().scale(1, 1, 1);
             RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
             RenderSystem.setShaderTexture(0, browser.getRenderer().getTextureID());
 
             int width = context.getScaledWindowWidth();
             int height = context.getScaledWindowHeight();
 
+            int windowWidth = this.client.getWindow().getWidth();
+            int windowHeight = this.client.getWindow().getHeight();
+
             if (oldWidth != width || oldHeight != height) {
-                browser.resize(width, height);
+                browser.resize(windowWidth, windowHeight);
                 browser.setZoomLevel(OuroverlayClient.getZoom());
             }
 
